@@ -1,0 +1,3 @@
+# Static site — no build step. HTML + JSX served from repo root.
+[build]
+  publish = "."

@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waterplay Colour Theming</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<template id="__bundler_thumbnail" data-bg-color="#EFEFEC">
+  <svg viewBox="0 0 560 340" xmlns="http://www.w3.org/2000/svg">
+    <!-- Card shape -->
+    <rect x="60" y="40" width="440" height="260" rx="20" fill="#1858A8"/>
+    <!-- Brand splash shape suggestion -->
+    <ellipse cx="430" cy="230" rx="90" ry="120" fill="#C055A8" opacity="0.9"/>
+    <ellipse cx="340" cy="260" rx="80" ry="38" fill="#C055A8" opacity="0.9"/>
+    <!-- Title text block -->
+    <rect x="90" y="75" width="180" height="22" rx="4" fill="#fff" opacity="0.9"/>
+    <rect x="90" y="108" width="220" height="10" rx="3" fill="#fff" opacity="0.5"/>
+    <rect x="90" y="124" width="200" height="10" rx="3" fill="#fff" opacity="0.5"/>
+    <!-- Button -->
+    <rect x="90" y="155" width="100" height="30" rx="7" fill="#fff"/>
+    <!-- Swatch strip -->
+    <rect x="60" y="320" width="76" height="16" rx="3" fill="#FDDCCC"/>
+    <rect x="144" y="320" width="76" height="16" rx="3" fill="#EF6520"/>
+    <rect x="228" y="320" width="76" height="16" rx="3" fill="#3A82C8"/>
+    <rect x="312" y="320" width="76" height="16" rx="3" fill="#C8CC18"/>
+    <rect x="396" y="320" width="76" height="16" rx="3" fill="#A01880"/>
+  </svg>
+</template>
+<style>
+  /* ─────────────────────────────────────────
+     COLOUR TOKENS
+  ───────────────────────────────────────── */
+  :root {
+    --orange-100: #FDDCCC;
+    --orange-200: #F5A878;
+    --orange-300: #EF6520;
+    --orange-400: #D44010;
+    --orange-500: #B83010;
+
+    --blue-100: #BAD8F5;
+    --blue-200: #78B0E0;
+    --blue-300: #3A82C8;
+    --blue-400: #1858A8;
+    --blue-500: #0A3878;
+
+    --lime-100: #FAFAE8;
+    --lime-200: #E8ECA0;
+    --lime-300: #C8CC18;
+    --lime-400: #AAAA08;
+    --lime-500: #888800;
+
+    --pink-100: #FFF2F8;
+    --pink-200: #FDD0E8;
+    --pink-300: #F898CC;
+    --pink-400: #F040A0;
+    --pink-500: #CC1870;
+
+    --purple-100: #F0D0E8;
+    --purple-200: #E0A0C8;
+    --purple-300: #C055A8;
+    --purple-400: #A01880;
+    --purple-500: #780055;
+
+    /* ── Active theme slots ── */
+    --theme-bg:    #1858A8;
+    --theme-shape: #C055A8;
+    --theme-text:  #ffffff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Barlow", sans-serif;
+    background: #EFEFEC;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 48px 24px;
+  }
+
+  /* ─── Page header ─── */
+  .page-header {
+    text-align: center;
+  }
+  .page-header h1 {
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #222;
+  }
+  .page-header p {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ─── Theme switcher ─── */
+  .switcher {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    max-width: 680px;
+  }
+
+  .theme-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px 7px 8px;
+    border: 2px solid transparent;
+    border-radius: 99px;
+    background: #fff;
+    cursor: pointer;
+    font-family: "Barlow", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #444;
+    transition: border-color 0.18s, box-shadow 0.18s, transform 0.12s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .theme-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+  .theme-btn.active { border-color: #222; box-shadow: 0 4px 14px rgba(0,0,0,0.15); }
+  .theme-btn.custom-btn {
+    border-style: dashed;
+    border-color: #aaa;
+  }
+  .theme-btn.custom-btn.active { border-color: #222; }
+
+  .swatch-pair {
+    display: flex;
+    border-radius: 99px;
+    overflow: hidden;
+    width: 28px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  .swatch-pair span { flex: 1; display: block; }
+
+  /* ─────────────────────────────────────────
+     THE CARD COMPONENT
+  ───────────────────────────────────────── */
+  .card-wrap {
+    position: relative;
+    width: 560px;
+    height: 340px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--theme-bg);
+    transition: background 0.4s ease;
+    box-shadow: 0 12px 50px rgba(0,0,0,0.18);
+  }
+
+  /* SVG shape layers — all stacked, visibility toggled */
+  .shapes {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  /* Shape SVG — brand mark */
+  .shapes svg {
+    position: absolute;
+    top: 120px;
+    left: 300px;
+    width: 280px;
+    height: auto;
+    display: block;
+  }
+
+  /* Shape fill uses CSS var */
+  .shapes path, .shapes ellipse { fill: var(--theme-shape); transition: fill 0.4s ease; }
+
+  /* Card content */
+  .card-content {
+    position: relative;
+    z-index: 2;
+    padding: 36px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 380px;
+    height: 100%;
+  }
+
+  .card-title {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: 34px;
+    line-height: 1.05;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--theme-text);
+    transition: color 0.4s ease;
+  }
+
+  .card-body {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--theme-text);
+    font-weight: 400;
+    transition: color 0.4s ease;
+    opacity: 0.92;
+  }
+
+  .card-cta {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 24px;
+    background: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #111;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: opacity 0.15s;
+  }
+  .card-cta:hover { opacity: 0.88; }
+
+  /* ─── Palette strip ─── */
+  .palette-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .palette-row { display: flex; gap: 4px; }
+  .swatch-tile {
+    width: 38px;
+    height: 26px;
+    border-radius: 5px;
+    position: relative;
+    cursor: default;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .swatch-tile[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111;
+    color: #fff;
+    font-size: 10px;
+    padding: 3px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-family: monospace;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .swatch-tile.active-bg {
+    transform: translateY(-3px) scale(1.12);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.22);
+    outline: 2.5px solid #111;
+    outline-offset: 2px;
+    z-index: 2;
+  }
+  .swatch-tile.active-shape {
+    transform: translateY(-3px) scale(1.12);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.22);
+    outline: 2.5px dashed #111;
+    outline-offset: 2px;
+    z-index: 2;
+  }
+
+  /* ── Custom colour picker row ── */
+  .custom-picker {
+    display: none;
+    animation: fadeSlideIn 0.22s ease;
+  }
+  .custom-picker.visible { display: flex; }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .custom-picker-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 12px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  }
+
+  .slot-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px 8px 8px;
+    border: 2px solid transparent;
+    border-radius: 99px;
+    background: #f5f5f3;
+    cursor: pointer;
+    font-family: "Barlow", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #555;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  }
+  .slot-btn:hover { background: #eee; transform: translateY(-1px); }
+  .slot-btn.active {
+    border-color: #111;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+  .slot-swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: block;
+    flex-shrink: 0;
+    border: 2px solid rgba(0,0,0,0.08);
+    transition: background 0.3s ease;
+  }
+  .color-divider {
+    font-size: 16px;
+    color: #ccc;
+    font-weight: 300;
+  }
+  .slot-hint {
+    font-size: 11px;
+    color: #bbb;
+    letter-spacing: 0.03em;
+    margin-left: 4px;
+    transition: opacity 0.2s;
+  }
+  .slot-hint.hidden { opacity: 0; pointer-events: none; }
+
+  /* Palette swatches become clickable in custom mode */
+  .swatch-tile.pickable {
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, outline 0.15s;
+  }
+  .swatch-tile.pickable:hover {
+    transform: translateY(-4px) scale(1.15);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.20);
+    z-index: 5;
+  }
+
+  .palette-legend {
+    display: flex;
+    gap: 16px;
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+  .palette-legend span { display: flex; align-items: center; gap: 5px; }
+  .legend-bg   { width: 14px; height: 10px; border-radius: 2px; border: 2px solid #111; }
+  .legend-shape { width: 14px; height: 10px; border-radius: 2px; border: 2px dashed #111; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Waterplay Colour Theming</h1>
+  <p>Select a theme to update the card's background and shape colour</p>
+</div>
+
+<!-- Theme switcher buttons (rendered by JS) -->
+<div class="switcher" id="switcher"></div>
+
+<!-- THE CARD -->
+<div class="card-wrap" id="card-wrap">
+
+  <!-- Brand mark shape — bleeds from bottom-right -->
+  <div class="shapes" id="shapes">
+    <svg viewBox="0 0 451 415" xmlns="http://www.w3.org/2000/svg">
+      <path d="M348.305 0H368.625C370.197 0.608335 372.447 0.611135 374.177 0.901942C398.72 5.029 422.375 21.8419 433.438 44.1857C447.42 72.4227 442.72 105.881 432.56 134.497C421.387 165.929 401.802 206.292 379.715 231.595C361.477 252.488 328.092 274.997 304.462 289.27C298.7 292.71 292.91 296.103 287.092 299.448C281.227 302.833 273.44 306.075 271.443 313.047C272.513 315.827 275.688 320.328 279.105 318C326.475 285.708 375.27 249.533 432.427 237.329C435.722 236.626 448.75 233.639 451 235.073V415H89.227C87.431 412.257 91.1068 407.438 92.83 405.2C99.7103 396.27 110.359 386.453 119.941 380.575C145.705 364.773 178.116 361.945 207.678 362.453C211.683 362.523 224.698 365.01 223.885 356.655C222.444 348.865 212.118 350.115 205.984 350.15C164.7 350.342 123.736 342.912 85.149 328.235C72.8945 323.51 61.1383 318.172 50.1183 310.965C29.0425 297.182 10.704 277.068 4.05272 252.298C2.54782 246.693 1.41511 240.726 0.801965 234.952C0.614597 233.189 0.355902 231.428 0 229.69V213.363C0.657483 211.151 0.910562 207.442 1.35374 204.984C10.5483 153.773 67.849 157.526 106.801 166.787C121.313 170.238 130.182 174.98 142.353 183.335C156.555 193.085 168.587 204.196 180.703 216.365C186.973 222.663 192.857 228.566 198.666 235.321C202.229 239.499 205.684 243.769 209.027 248.125C211.539 251.365 223.307 268.765 229.113 267.478C233.69 265.045 233.083 261.485 232.097 257.733C230.602 252.04 228.723 245.187 227.533 239.872C225.888 232.822 224.697 225.674 223.967 218.471C223.007 209.625 222.444 199.16 222.217 190.212C222.01 182.04 223.2 172.884 223.445 164.65C223.686 156.532 224.859 147.973 225.863 139.895C228.823 122.669 235.583 105.358 243.189 89.721C251.36 72.828 261.078 56.729 272.223 41.6302C277.258 34.761 282.815 27.4945 289.215 21.9815C302.392 10.6363 318.92 4.52527 335.865 1.54051C338.98 0.991585 345.695 1.02264 348.305 0Z"/>
+    </svg>
+  </div><!-- /.shapes -->
+
+  <!-- Content -->
+  <div class="card-content">
+    <h2 class="card-title" id="card-title">Aquatic Play Solutions</h2>
+    <p class="card-body" id="card-body">Unleash the exhilarating potential of aquatic play for developing minds, thrill seekers, budding explorers and the young at heart.</p>
+    <button class="card-cta">Learn More</button>
+  </div>
+
+</div><!-- /.card-wrap -->
+
+<!-- Custom colour row — only visible when Custom theme is active -->
+<div class="custom-picker" id="custom-picker">
+  <div class="custom-picker-inner">
+    <button class="slot-btn" id="slot-bg" data-slot="bg">
+      <span class="slot-swatch" id="slot-bg-swatch"></span>
+      <span class="slot-label">Background</span>
+    </button>
+    <div class="color-divider">+</div>
+    <button class="slot-btn" id="slot-shape" data-slot="shape">
+      <span class="slot-swatch" id="slot-shape-swatch"></span>
+      <span class="slot-label">Shape</span>
+    </button>
+    <span class="slot-hint" id="slot-hint">← pick a slot, then choose from the palette</span>
+  </div>
+</div>
+
+<!-- Colour reference palette -->
+<div class="palette-strip" id="palette-strip"></div>
+<div class="palette-legend">
+  <span><span class="legend-bg"></span> Background</span>
+  <span><span class="legend-shape"></span> Shape</span>
+</div>
+
+<script>
+  /* ── Colour tokens ── */
+  const C = {
+    orange: { 100:'#FDDCCC', 200:'#F5A878', 300:'#EF6520', 400:'#D44010', 500:'#B83010' },
+    blue:   { 100:'#BAD8F5', 200:'#78B0E0', 300:'#3A82C8', 400:'#1858A8', 500:'#0A3878' },
+    lime:   { 100:'#FAFAE8', 200:'#E8ECA0', 300:'#C8CC18', 400:'#AAAA08', 500:'#888800' },
+    pink:   { 100:'#FFF2F8', 200:'#FDD0E8', 300:'#F898CC', 400:'#F040A0', 500:'#CC1870' },
+    purple: { 100:'#F0D0E8', 200:'#E0A0C8', 300:'#C055A8', 400:'#A01880', 500:'#780055' },
+  };
+
+  /* ── Brand themes (EPIC) ──
+     shape: 'sweep' | 'wave' | 'blobs'
+     text:  '#ffffff' for dark bg, dark color for light bg
+  ── */
+  const THEMES = [
+    { id:'playful',          label:'Playful',          bg:C.lime[100],   shape:C.orange[300], variant:'wave',  text:'#3A3200' },
+    { id:'energetic',        label:'Energetic',        bg:C.blue[400],   shape:C.lime[100],   variant:'sweep', text:'#ffffff' },
+    { id:'intentional-1',    label:'Intentional 1',    bg:C.orange[300], shape:C.orange[100], variant:'sweep', text:'#ffffff' },
+    { id:'intentional-2',    label:'Intentional 2',    bg:C.purple[400], shape:C.pink[200],   variant:'blobs', text:'#ffffff' },
+    { id:'courageous',       label:'Courageous',       bg:C.pink[100],   shape:C.blue[400],   variant:'wave',  text:'#0A3878' },
+    { id:'custom', label:'Custom', bg:'#1858A8', shape:'#EF6520', text:'#ffffff', isCustom: true },
+  ];
+
+  let activeId = 'playful';
+
+  window.__activeId = 'playful';
+  window.__customTheme = { bg: '#1858A8', shape: '#EF6520', text: '#ffffff' };
+
+  window.applyCustomColors = function(bg, shape) {
+    // Determine readable text colour automatically
+    function luminance(hex) {
+      const r = parseInt(hex.slice(1,3),16)/255;
+      const g = parseInt(hex.slice(3,5),16)/255;
+      const b = parseInt(hex.slice(5,7),16)/255;
+      return 0.2126*r + 0.7152*g + 0.0722*b;
+    }
+    const text = luminance(bg) > 0.4 ? '#1a1a1a' : '#ffffff';
+    window.__customTheme = { bg, shape, text };
+    // Update the custom entry in THEMES
+    const t = THEMES.find(t => t.id === 'custom');
+    if (t) { t.bg = bg; t.shape = shape; t.text = text; }
+    if (activeId === 'custom') applyTheme({ id:'custom', bg, shape, text });
+  };
+
+  // ── Custom theme palette-picker logic ──
+  let customBg    = '#1858A8';
+  let customShape = '#aaaa32';
+  let activeSlot  = null; // 'bg' | 'shape' | null
+
+  function setActiveSlot(slot) {
+    activeSlot = slot;
+    document.getElementById('slot-bg')   ?.classList.toggle('active', slot === 'bg');
+    document.getElementById('slot-shape')?.classList.toggle('active', slot === 'shape');
+    const hint = document.getElementById('slot-hint');
+    if (hint) hint.classList.toggle('hidden', !!slot);
+    document.querySelectorAll('.swatch-tile').forEach(t => t.classList.toggle('pickable', !!slot));
+  }
+
+  function applyTheme(t) {
+    const root = document.documentElement;
+    root.style.setProperty('--theme-bg',    t.bg);
+    root.style.setProperty('--theme-shape', t.shape);
+    root.style.setProperty('--theme-text',  t.text);
+
+    // Also set directly on elements to ensure update
+    const card = document.getElementById('card-wrap');
+    card.style.background = t.bg;
+    card.style.transition = 'background 0.4s ease';
+
+    document.querySelectorAll('.shapes path, .shapes ellipse').forEach(el => {
+      el.style.fill = t.shape;
+    });
+
+    document.querySelectorAll('.card-title, .card-body').forEach(el => {
+      el.style.color = t.text;
+    });
+
+    document.querySelectorAll('.btn-primary').forEach(el => {
+      el.style.background = t.fg || t.text;
+      el.style.color = t.bg;
+    });
+
+    document.querySelectorAll('.btn-secondary').forEach(el => {
+      el.style.borderColor = t.mid || t.shape;
+      el.style.color = t.text;
+    });
+
+    /* Highlight matching palette swatches */
+    document.querySelectorAll('.swatch-tile').forEach(tile => {
+      tile.classList.remove('active-bg', 'active-shape');
+      if (tile.dataset.hex === t.bg.toLowerCase())    tile.classList.add('active-bg');
+      if (tile.dataset.hex === t.shape.toLowerCase()) tile.classList.add('active-shape');
+    });
+
+    activeId = t.id;
+    window.__activeId = t.id;
+    window.dispatchEvent(new Event('__themeChanged'));
+
+    // Show/hide custom picker
+    const picker = document.getElementById('custom-picker');
+    if (picker) picker.classList.toggle('visible', t.id === 'custom');
+    if (t.id !== 'custom') setActiveSlot(null);
+
+    renderButtons();
+  }
+
+  function renderButtons() {
+    const el = document.getElementById('switcher');
+    el.innerHTML = '';
+    THEMES.forEach(t => {
+      const btn = document.createElement('button');
+      btn.className = 'theme-btn' + (t.id === activeId ? ' active' : '') + (t.isCustom ? ' custom-btn' : '');
+      const swatchInner = t.isCustom
+        ? `<span style="background:conic-gradient(#EF6520,#C8CC18,#3A82C8,#A01880,#EF6520)"></span><span style="background:#fff"></span>`
+        : `<span style="background:${t.bg}"></span><span style="background:${t.shape}"></span>`;
+      btn.innerHTML = `
+        <span class="swatch-pair">
+          ${swatchInner}
+        </span>
+        ${t.label}
+      `;
+      btn.addEventListener('click', () => applyTheme(t));
+      el.appendChild(btn);
+    });
+  }
+
+  function renderPalette() {
+    const strip = document.getElementById('palette-strip');
+    Object.entries(C).forEach(([name, shades]) => {
+      const row = document.createElement('div');
+      row.className = 'palette-row';
+      Object.entries(shades).forEach(([shade, hex]) => {
+        const tile = document.createElement('div');
+        tile.className = 'swatch-tile';
+        tile.style.background = hex;
+        tile.title = `--${name}-${shade}`;
+        tile.dataset.hex = hex.toLowerCase();
+        row.appendChild(tile);
+      });
+      strip.appendChild(row);
+    });
+  }
+
+  renderButtons();
+  renderPalette();
+  applyTheme(THEMES[0]);
+
+  // ── Custom theme palette-picker logic ──
+  function updateSlotSwatches() {
+    const bgSwatch    = document.getElementById('slot-bg-swatch');
+    const shapeSwatch = document.getElementById('slot-shape-swatch');
+    if (bgSwatch)    bgSwatch.style.background    = customBg;
+    if (shapeSwatch) shapeSwatch.style.background = customShape;
+  }
+
+  function applyCustomToCard() {
+    if (window.applyCustomColors) window.applyCustomColors(customBg, customShape);
+    updateSlotSwatches();
+    // Update active-bg / active-shape highlights
+    document.querySelectorAll('.swatch-tile').forEach(tile => {
+      tile.classList.remove('active-bg', 'active-shape');
+      if (tile.dataset.hex === customBg.toLowerCase())    tile.classList.add('active-bg');
+      if (tile.dataset.hex === customShape.toLowerCase()) tile.classList.add('active-shape');
+    });
+  }
+
+  document.getElementById('slot-bg')?.addEventListener('click', () => setActiveSlot(activeSlot === 'bg' ? null : 'bg'));
+  document.getElementById('slot-shape')?.addEventListener('click', () => setActiveSlot(activeSlot === 'shape' ? null : 'shape'));
+
+  // Palette tile clicks — only active when a slot is selected
+  document.getElementById('palette-strip')?.addEventListener('click', e => {
+    const tile = e.target.closest('.swatch-tile');
+    if (!tile || !activeSlot || activeId !== 'custom') return;
+    const hex = tile.dataset.hex;
+    if (!hex) return;
+    if (activeSlot === 'bg')    customBg    = hex;
+    if (activeSlot === 'shape') customShape = hex;
+    applyCustomToCard();
+    // Auto-advance: bg → shape → done
+    if (activeSlot === 'bg')    setActiveSlot('shape');
+    else                        setActiveSlot(null);
+  });
+
+  // Init swatches on load
+  updateSlotSwatches();
+</script>
+<div id="tweaks-root"></div>
+
+<script type="text/babel">
+function initWaterplayTweaks() {
+  const { TweaksPanel, TweakSection, TweakSlider, TweakRadio, useTweaks } = window;
+  if (!TweaksPanel || !useTweaks) { setTimeout(initWaterplayTweaks, 50); return; }
+
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "shapeEnergy": 100,
+    "personality": "Bold",
+    "typeFeel": "Editorial",
+    "customBg": "#ed469d",
+    "customShape": "#aaaa32"
+  }/*EDITMODE-END*/;
+
+  function applyTweaks(tweaks) {
+    const card = document.getElementById('card-wrap');
+    const svg = document.querySelector('.shapes svg');
+    const title = document.querySelector('.card-title');
+    const bodyEl = document.querySelector('.card-body');
+    const cta = document.querySelector('.card-cta');
+    if (!card) return;
+
+    const energy = tweaks.shapeEnergy / 100;
+    if (svg) {
+      svg.style.opacity = 0.3 + energy * 0.7;
+      const baseSize = 180 + energy * 160;
+      svg.style.width = baseSize + 'px';
+      const svgH = baseSize * 415 / 451;
+      svg.style.top  = Math.round(340 - svgH * 0.7) + 'px';
+      svg.style.left = Math.round(560 - baseSize * 0.75) + 'px';
+    }
+
+    const personalities = {
+      'Refined': { radius:'8px',  shadow:'0 4px 20px rgba(0,0,0,0.10)', casing:'uppercase', spacing:'0.08em',  ctaRadius:'4px'   },
+      'Bold':    { radius:'20px', shadow:'0 12px 50px rgba(0,0,0,0.18)', casing:'uppercase', spacing:'0.02em',  ctaRadius:'10px'  },
+      'Playful': { radius:'32px', shadow:'0 20px 60px rgba(0,0,0,0.22)', casing:'none',      spacing:'-0.01em', ctaRadius:'99px'  },
+    };
+    const p = personalities[tweaks.personality] || personalities['Bold'];
+    card.style.borderRadius = p.radius;
+    card.style.boxShadow    = p.shadow;
+    if (title) { title.style.textTransform = p.casing; title.style.letterSpacing = p.spacing; }
+    if (cta)   { cta.style.borderRadius = p.ctaRadius; }
+
+    const typeFeels = {
+      'Punchy':    { titleSize:'34px', bodySize:'15px', lineHeight:'1.55', padding:'36px' },
+      'Editorial': { titleSize:'42px', bodySize:'14px', lineHeight:'1.7',  padding:'40px' },
+      'Compact':   { titleSize:'26px', bodySize:'13px', lineHeight:'1.45', padding:'28px' },
+    };
+    const tf = typeFeels[tweaks.typeFeel] || typeFeels['Punchy'];
+    if (title)  title.style.fontSize = tf.titleSize;
+    if (bodyEl) { bodyEl.style.fontSize = tf.bodySize; bodyEl.style.lineHeight = tf.lineHeight; }
+    const content = document.querySelector('.card-content');
+    if (content) content.style.padding = tf.padding;
+  }
+
+  function WaterplayTweaks() {
+    const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+    React.useEffect(() => { applyTweaks(tweaks); }, [tweaks]);
+
+    return (
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Shape Energy">
+          <TweakSlider
+            label="Scale &amp; presence of brand mark"
+            value={tweaks.shapeEnergy} min={0} max={100} step={1}
+            onChange={v => setTweak('shapeEnergy', v)}
+          />
+        </TweakSection>
+        <TweakSection label="Card Personality">
+          <TweakRadio
+            label="Corners, shadow &amp; type casing"
+            value={tweaks.personality}
+            options={['Refined', 'Bold', 'Playful']}
+            onChange={v => setTweak('personality', v)}
+          />
+        </TweakSection>
+        <TweakSection label="Type Feel">
+          <TweakRadio
+            label="Scale &amp; density"
+            value={tweaks.typeFeel}
+            options={['Compact', 'Punchy', 'Editorial']}
+            onChange={v => setTweak('typeFeel', v)}
+          />
+        </TweakSection>
+      </TweaksPanel>
+    );
+  }
+
+  const root = document.getElementById('tweaks-root');
+  if (root) ReactDOM.createRoot(root).render(<WaterplayTweaks />);
+}
+
+initWaterplayTweaks();
+</script>
+
+</body>
+</html>
