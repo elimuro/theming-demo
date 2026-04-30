@@ -298,6 +298,22 @@
     z-index: 2;
   }
 
+  /* Primary brand swatches — centred ring (matches palette grid key picks) */
+  .swatch-tile.brand-core::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    border: 2px solid #111;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9);
+    pointer-events: none;
+    z-index: 1;
+  }
+
   /* ── Custom colour picker row ── */
   .custom-picker {
     display: none;
@@ -570,12 +586,19 @@
 
   function renderPalette() {
     const strip = document.getElementById('palette-strip');
+    const brandCoreShade = {
+      orange: '300',
+      blue: '500',
+      lime: '300',
+      pink: '200',
+      purple: '400',
+    };
     Object.entries(C).forEach(([name, shades]) => {
       const row = document.createElement('div');
       row.className = 'palette-row';
       Object.entries(shades).forEach(([shade, hex]) => {
         const tile = document.createElement('div');
-        tile.className = 'swatch-tile';
+        tile.className = 'swatch-tile' + (brandCoreShade[name] === shade ? ' brand-core' : '');
         tile.style.background = hex;
         tile.title = `--${name}-${shade}`;
         tile.dataset.hex = hex.toLowerCase();
