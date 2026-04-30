@@ -33,6 +33,16 @@
   </svg>
 </template>
 <style>
+  @font-face {
+    font-family: "Bricolage Grotesque";
+    src: url("BricolageGrotesque[opsz,wdth,wght].ttf") format("truetype-variations"),
+         url("BricolageGrotesque[opsz,wdth,wght].ttf") format("truetype");
+    font-weight: 200 800;
+    font-stretch: 50% 100%;
+    font-style: normal;
+    font-display: swap;
+  }
+
   /* ─────────────────────────────────────────
      COLOUR TOKENS
   ───────────────────────────────────────── */
@@ -176,9 +186,9 @@
   /* Shape SVG — brand mark */
   .shapes svg {
     position: absolute;
-    top: 120px;
-    left: 300px;
-    width: 280px;
+    top: 80px;
+    left: 261px;
+    width: 340px;
     height: auto;
     display: block;
   }
@@ -199,14 +209,18 @@
   }
 
   .card-title {
-    font-family: "Barlow Condensed", sans-serif;
-    font-weight: 800;
+    font-family: "Bricolage Grotesque", "Barlow Condensed", sans-serif;
+    font-variation-settings: "wght" 600, "opsz" 48, "wdth" 50;
     font-size: 34px;
     line-height: 1.05;
     text-transform: uppercase;
     letter-spacing: 0.02em;
     color: var(--theme-text);
-    transition: color 0.4s ease;
+    transition: color 0.4s ease, font-variation-settings 0.35s ease;
+  }
+
+  .card-wrap:hover .card-title {
+    font-variation-settings: "wght" 800,"opsz" 75, "wdth" 100;
   }
 
   .card-body {
@@ -643,8 +657,8 @@ function initWaterplayTweaks() {
       const baseSize = 180 + energy * 160;
       svg.style.width = baseSize + 'px';
       const svgH = baseSize * 415 / 451;
-      svg.style.top  = Math.round(340 - svgH * 0.7) + 'px';
-      svg.style.left = Math.round(560 - baseSize * 0.75) + 'px';
+      svg.style.top  = Math.round(340 - svgH * 0.7) - 41 + 'px';
+      svg.style.left = Math.round(560 - baseSize * 0.75) - 44 + 'px';
     }
 
     const personalities = {
